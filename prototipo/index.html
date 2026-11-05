@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Alerta Migrante – Prototipo v2</title>
 <style>
-:root{--bg:#e6edef;--bar:#0e5a55;--bar-t:#fff;--me:#d3efc6;--bot:#fff;--tx:#17252b;--mu:#5b6d75;--line:#c9d5d9;--hi:#b3261e;--me2:#b26a00;--lo:#1b7a3d;--hib:#fbe4e2;--meb:#fff0d6;--lob:#dff3e5;
+:root{--bg:#f4efe6;--bar:#0e5a55;--bar-t:#fff;--me:#d9ebe6;--bot:#fff;--tx:#17252b;--mu:#5b6d75;--hi:#b3261e;--me2:#b26a00;--lo:#1b7a3d;--hib:#fbe4e2;--meb:#fff0d6;--lob:#dff3e5;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1418;--bar:#0b3f3b;--me:#14493f;--bot:#1c2a31;--tx:#e8eef0;--mu:#93a6ae;--line:#2a3b43;--hi:#ff8a80;--me2:#ffc46b;--lo:#7fd99a;--hib:#3a1f1e;--meb:#3a2d12;--lob:#173324}}
 :root[data-theme="dark"]{--bg:#0d1418;--bar:#0b3f3b;--me:#14493f;--bot:#1c2a31;--tx:#e8eef0;--mu:#93a6ae;--line:#2a3b43;--hi:#ff8a80;--me2:#ffc46b;--lo:#7fd99a;--hib:#3a1f1e;--meb:#3a2d12;--lob:#173324}
@@ -55,26 +55,33 @@ textarea{flex:1;resize:none;border:1px solid var(--line);border-radius:20px;padd
 .st{border-radius:12px;padding:10px 12px;background:var(--bg)}.st b{display:block;font-size:26px}.st span{font-size:13px;color:var(--mu)}
 .card button{border:0;border-radius:10px;padding:9px 14px;font:inherit;cursor:pointer;background:var(--bar);color:#fff}
 .card .sec{background:var(--bg);color:var(--tx);margin-right:6px}
+.ic{width:20px;height:20px;display:block;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.av .ic{width:22px;height:22px}
+.rb,header button{display:inline-grid;place-items:center}
+.dot{display:inline-block;width:10px;height:10px;border-radius:50%;background:currentColor;margin-right:7px;vertical-align:1px}
+.acts button{display:inline-flex;align-items:center;gap:6px}.acts .ic{width:16px;height:16px}
+.foot{text-align:center;font-size:11.5px;color:var(--mu);padding:0 12px 10px}
 button:focus-visible,textarea:focus-visible{outline:3px solid #2b8cff;outline-offset:2px}
 </style>
 </head>
 <body>
 <div class="app">
 <header>
-<div class="av" aria-hidden="true">🛡️</div>
-<div><h1>Alerta Migrante</h1><small>Verificación de mensajes sospechosos · versión 2</small></div>
-<div class="hb"><button id="stats" type="button" aria-label="Ver consultas">📊</button><button id="clear" type="button">Limpiar</button></div>
+<div class="av" aria-hidden="true"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v5c0 5-3.5 8.5-7 10-3.5-1.5-7-5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+<div><h1>Alerta Migrante</h1><small>Verificador de mensajes sospechosos</small></div>
+<div class="hb"><button id="stats" type="button" aria-label="Ver consultas"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 20V11M12 20V5M19 20v-6"/></svg></button><button id="clear" type="button">Limpiar</button></div>
 </header>
 <div id="chat" aria-live="polite"></div>
 <div id="chips"></div>
 <form id="f">
-<button id="cam" class="rb" type="button" aria-label="Enviar captura de pantalla">📷</button>
+<button id="cam" class="rb" type="button" aria-label="Enviar captura de pantalla"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg></button>
 <input id="file" type="file" accept="image/*" hidden>
-<textarea id="t" rows="1" placeholder="Pegue el mensaje, enlace o número" aria-label="Mensaje a verificar"></textarea>
-<button id="send" class="rb" type="submit" aria-label="Enviar">➤</button>
+<textarea id="t" rows="1" placeholder="Pegue aquí el mensaje" aria-label="Mensaje a verificar"></textarea>
+<button id="send" class="rb" type="submit" aria-label="Enviar"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12l16-8-6 16-2.5-6.5z"/></svg></button>
 </form>
+<div class="foot">Proyecto de Ética Aplicada · Universidad Rafael Landívar, Quetzaltenango · 2026</div>
 <div id="panel" role="dialog" aria-modal="true" aria-labelledby="pt"><div class="card">
-<h2 id="pt">📊 Consultas en este dispositivo</h2>
+<h2 id="pt">Consultas en este dispositivo</h2>
 <div style="font-size:13.5px;color:var(--mu)">Solo se cuentan los resultados. Nunca se guarda el contenido de los mensajes.</div>
 <div class="stats" id="sbox"></div>
 <button class="sec" id="reset" type="button">Reiniciar</button><button id="close" type="button">Cerrar</button>
@@ -155,16 +162,16 @@ function saveStats(){try{localStorage.setItem('am_stats',JSON.stringify(mem));}c
 function count(k){mem[k]++;saveStats();}
 
 /* ---------- 6. Respuesta del bot ---------- */
-const LBL={alto:'🔴 Riesgo ALTO: muy probable estafa',medio:'🟠 Riesgo MEDIO: tenga cuidado',bajo:'🟢 Riesgo BAJO: no vi señales claras'};
+const LBL={alto:'Riesgo ALTO: muy probable estafa',medio:'Riesgo MEDIO: tenga cuidado',bajo:'Riesgo BAJO: no vi señales claras'};
 const COL={alto:'var(--hi)',medio:'var(--me2)',bajo:'var(--lo)'};
 function botReply(text,ocrText){
  const a=analyze(text);count('total');count(a.lvl);
  const d=document.createElement('div');d.className='b bot';
  let h='';
- if(ocrText!=null)h+='<div class="sub">📷 Texto que leí en la captura:</div><div class="ocr">'+esc(ocrText)+'</div>';
- h+='<span class="badge '+a.lvl+'">'+LBL[a.lvl]+'</span><div class="meter"><i style="width:'+Math.max(4,a.score)+'%;background:'+COL[a.lvl]+'"></i></div><div class="pts">Puntaje de riesgo: '+a.score+' de 100</div>';
+ if(ocrText!=null)h+='<div class="sub">Texto que leí en la captura:</div><div class="ocr">'+esc(ocrText)+'</div>';
+ h+='<span class="badge '+a.lvl+'"><span class="dot"></span>'+LBL[a.lvl]+'</span><div class="meter"><i style="width:'+Math.max(4,a.score)+'%;background:'+COL[a.lvl]+'"></i></div><div class="pts">Puntaje de riesgo: '+a.score+' de 100</div>';
  if(a.sig.length)h+='<div class="sub">Señales que encontré:</div><ul>'+a.sig.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>';
- if(a.phones.length)h+='<div class="sub">📞 Números que revisé:</div><ul>'+a.phones.map(p=>'<li>'+esc(p.raw)+' → '+esc(p.pais)+'</li>').join('')+'</ul>';
+ if(a.phones.length)h+='<div class="sub">Números que revisé:</div><ul>'+a.phones.map(p=>'<li>'+esc(p.raw)+' → '+esc(p.pais)+'</li>').join('')+'</ul>';
  h+='<div class="sub">Qué hacer:</div><ul>';
  if(a.lvl==='alto')h+='<li><b>No responda, no pague y no abra enlaces.</b></li><li>Bloquee y reporte el número en WhatsApp.</li><li>Si ya dio datos o dinero, avise a su banco y pida orientación al Ministerio Público o a la PDH.</li>';
  else if(a.lvl==='medio')h+='<li>No haga ningún pago ni comparta datos todavía.</li><li>Confirme por otro medio (llame usted mismo al número oficial o al familiar).</li>';
@@ -174,12 +181,12 @@ function botReply(text,ocrText){
  h+='</ul>';
  if(a.urls.length&&a.lvl==='bajo')h+='<p>Ojo: un enlace sin señales raras <b>no significa que sea seguro</b>. Si no lo esperaba, no lo abra.</p>';
  h+='<div class="note">Esto es una orientación basada en señales, no una garantía de que el mensaje sea legítimo o falso. Su mensaje se analiza solo en este dispositivo y no se guarda.</div>';
- h+='<div class="acts"><button type="button" data-a="voz">🔊 Escuchar</button>'+(a.lvl!=='bajo'?'<button type="button" data-a="avisar">📤 Avisar a mi familia</button>':'')+'</div>';
+ h+='<div class="acts"><button type="button" data-a="voz"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 010 7"/></svg>Escuchar</button>'+(a.lvl!=='bajo'?'<button type="button" data-a="avisar"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/></svg>Avisar a mi familia</button>':'')+'</div>';
  d.innerHTML=h;
  d.querySelector('[data-a="voz"]').onclick=()=>speak(d);
  const av=d.querySelector('[data-a="avisar"]');
  if(av)av.onclick=()=>{
-  const msg='⚠️ Alerta Migrante: me llegó un mensaje que parece estafa (riesgo '+a.lvl.toUpperCase()+').\nSeñales: '+a.sig.slice(0,3).join('; ')+'.\nSi te llega algo parecido: no pagues, no compartas códigos ni datos, y llámame antes de hacer algo.';
+  const msg='ALERTA MIGRANTE: me llegó un mensaje que parece estafa (riesgo '+a.lvl.toUpperCase()+').\nSeñales: '+a.sig.slice(0,3).join('; ')+'.\nSi te llega algo parecido: no pagues, no compartas códigos ni datos, y llámame antes de hacer algo.';
   window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank','noopener');
  };
  return d;
@@ -190,7 +197,7 @@ function speak(el){
  if(!('speechSynthesis' in window)){alert('Este navegador no puede leer en voz alta.');return;}
  speechSynthesis.cancel();
  const c=el.cloneNode(true);c.querySelectorAll('.acts,.note,.meter,.ocr').forEach(x=>x.remove());
- const u=new SpeechSynthesisUtterance(c.innerText.replace(/[🔴🟠🟢📷📞💡🎓✅❌🏁]/gu,''));u.lang='es-MX';u.rate=.95;
+ const u=new SpeechSynthesisUtterance(c.innerText);u.lang='es-MX';u.rate=.95;
  const v=speechSynthesis.getVoices().find(v=>v.lang&&v.lang.startsWith('es'));if(v)u.voice=v;
  speechSynthesis.speak(u);
 }
@@ -202,7 +209,7 @@ function say(t,cls){const d=document.createElement('div');d.className='b '+cls;d
 function typing(t){const d=document.createElement('div');d.className='b bot typing';d.textContent=t||'Revisando…';add(d);return d;}
 function welcome(){
  const d=document.createElement('div');d.className='b bot';
- d.innerHTML='<p>¡Hola! Soy <b>Alerta Migrante</b>. Le ayudo a revisar si un mensaje, enlace o número es sospechoso antes de que haga algo.</p><p>Puede:</p><ul><li>✍️ <b>Pegar</b> el mensaje o el número que le llegó.</li><li>📷 <b>Mandar una captura</b> de pantalla del mensaje.</li><li>🎓 <b>Practicar</b> para aprender a reconocer estafas.</li></ul><p>💡 <b>Recuerde:</b> ningún trámite, empleo o premio real le pide pagar por adelantado ni el código de su WhatsApp.</p>';
+ d.innerHTML='<p>¡Hola! Soy <b>Alerta Migrante</b>. Le ayudo a revisar si un mensaje, enlace o número es sospechoso antes de que haga algo.</p><p>Puede:</p><ul><li><b>Pegar</b> el mensaje o el número que le llegó.</li><li><b>Mandar una captura</b> de pantalla del mensaje.</li><li><b>Practicar</b> para aprender a reconocer estafas.</li></ul><p><b>Recuerde:</b> ningún trámite, empleo o premio real le pide pagar por adelantado ni el código de su WhatsApp.</p>';
  add(d);
 }
 function send(text){
@@ -215,14 +222,14 @@ function send(text){
 let tessP=null;
 function loadTess(){
  if(window.Tesseract)return Promise.resolve();
- if(!tessP)tessP=new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js';s.onload=ok;s.onerror=()=>{tessP=null;no(new Error('sin conexión'));};document.head.appendChild(s);});
+ if(!tessP)tessP=new Promise((ok,no)=>{const s=document.createElement('script');s.src='https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js';s.onload=ok;s.onerror=()=>{tessP=null;no(new Error('sin conexión'));};document.head.appendChild(s);});
  return tessP;
 }
 async function handleImage(file){
  if(!file)return;
  const url=URL.createObjectURL(file);
  const me=document.createElement('div');me.className='b me';const im=document.createElement('img');im.src=url;im.alt='Captura enviada';me.appendChild(im);add(me);
- const ty=typing('📷 Leyendo la captura… (puede tardar unos segundos)');
+ const ty=typing('Leyendo la captura… (puede tardar unos segundos)');
  try{
   await loadTess();
   const r=await Tesseract.recognize(file,'spa');
@@ -251,12 +258,12 @@ let qi=-1,qok=0;
 function startQuiz(){
  qi=0;qok=0;
  const d=document.createElement('div');d.className='b bot';
- d.innerHTML='<p>🎓 <b>¡Vamos a practicar!</b> Le mostraré '+QUIZ.length+' mensajes. Dígame si cree que es estafa o no.</p>';add(d);
+ d.innerHTML='<p><b>¡Vamos a practicar!</b> Le mostraré '+QUIZ.length+' mensajes. Dígame si cree que es estafa o no.</p>';add(d);
  setTimeout(askQ,500);
 }
 function askQ(){
  const q=QUIZ[qi],d=document.createElement('div');d.className='b bot';
- d.innerHTML='<div class="sub">Mensaje '+(qi+1)+' de '+QUIZ.length+':</div><div class="quote">'+esc(q.m)+'</div><div class="qz"><button type="button" data-v="1">🚫 Es estafa</button><button type="button" data-v="0">✅ No es estafa</button></div>';
+ d.innerHTML='<div class="sub">Mensaje '+(qi+1)+' de '+QUIZ.length+':</div><div class="quote">'+esc(q.m)+'</div><div class="qz"><button type="button" data-v="1">Es estafa</button><button type="button" data-v="0">No es estafa</button></div>';
  d.querySelectorAll('.qz button').forEach(b=>b.onclick=()=>{d.querySelectorAll('.qz button').forEach(x=>x.disabled=true);answer(b.dataset.v==='1',b.textContent);});
  add(d);
 }
@@ -264,7 +271,7 @@ function answer(v,label){
  const q=QUIZ[qi],ok=v===q.e;if(ok)qok++;count('preguntas');if(ok)count('aciertos');
  say(label,'me');
  const a=analyze(q.m),d=document.createElement('div');d.className='b bot';
- let h='<p><b>'+(ok?'✅ ¡Correcto!':'❌ No exactamente.')+'</b> '+(q.e?'Este mensaje <b>sí es estafa</b>.':'Este mensaje <b>no tiene señales de estafa</b>.')+'</p>';
+ let h='<p><b>'+(ok?'¡Correcto!':'No exactamente.')+'</b> '+(q.e?'Este mensaje <b>sí es estafa</b>.':'Este mensaje <b>no tiene señales de estafa</b>.')+'</p>';
  if(q.e&&a.sig.length)h+='<div class="sub">Las señales eran:</div><ul>'+a.sig.map(x=>'<li>'+esc(x)+'</li>').join('')+'</ul>';
  if(!q.e)h+='<p>No pide dinero, códigos ni datos, y no le apura. Aun así, si algo no le cuadra, confirme por otro medio.</p>';
  d.innerHTML=h;
@@ -274,7 +281,7 @@ function answer(v,label){
   setTimeout(()=>{
    const f=document.createElement('div');f.className='b bot';
    const msg=qok===QUIZ.length?'¡Excelente! Reconoce muy bien las estafas.':qok>=4?'¡Muy bien! Ya reconoce la mayoría de señales.':'Siga practicando: fíjese en la urgencia, los cobros y los códigos.';
-   f.innerHTML='<p>🏁 <b>Resultado: '+qok+' de '+QUIZ.length+' correctas.</b></p><p>'+msg+'</p><div class="acts"><button type="button">🔁 Practicar otra vez</button></div>';
+   f.innerHTML='<p><b>Resultado: '+qok+' de '+QUIZ.length+' correctas.</b></p><p>'+msg+'</p><div class="acts"><button type="button">Practicar otra vez</button></div>';
    f.querySelector('button').onclick=startQuiz;add(f);qi=-1;
   },700);
  },400);
@@ -290,7 +297,7 @@ const EX=[
 ['Número desconocido','+92 301 555 7788'],
 ['Mensaje normal','Hola tía, ya llegué bien al trabajo. Más tarde te llamo para saber cómo está todo por allá.']
 ];
-const pb=document.createElement('button');pb.type='button';pb.className='main';pb.textContent='🎓 Practicar';pb.onclick=startQuiz;$('chips').appendChild(pb);
+const pb=document.createElement('button');pb.type='button';pb.className='main';pb.textContent='Practicar';pb.onclick=startQuiz;$('chips').appendChild(pb);
 EX.forEach(([l,m])=>{const b=document.createElement('button');b.type='button';b.textContent=l;b.onclick=()=>send(m);$('chips').appendChild(b);});
 
 /* ---------- 12. Panel de consultas ---------- */
