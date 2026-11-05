@@ -7,11 +7,11 @@ const NOTA_ETICA =
 
 function mensajeBienvenida() {
   return [
-    '🛡️ *¡Hola! Soy Alerta Migrante.*',
+    '*¡Hola! Soy Alerta Migrante.*',
     '',
     'Le ayudo a revisar si un mensaje, enlace o número es sospechoso *antes* de que haga algo.',
     '',
-    '👉 Reenvíe o pegue aquí el mensaje que le llegó y le digo qué señales de fraude encuentro.',
+    'Reenvíe o pegue aquí el mensaje que le llegó y le digo qué señales de fraude encuentro.',
     '',
     NOTA_ETICA
   ].join('\n');
@@ -19,16 +19,16 @@ function mensajeBienvenida() {
 
 function mensajeSoloImagen() {
   return [
-    '📷 Recibí una imagen, pero por ahora todavía no puedo leer capturas.',
+    'Recibí una imagen, pero por ahora todavía no puedo leer capturas.',
     '',
     'Por favor *copie y pegue el texto* del mensaje, o reenvíelo directamente aquí.'
   ].join('\n');
 }
 
 const TITULOS = {
-  alto: '🔴 *Riesgo ALTO: muy probable estafa*',
-  medio: '🟠 *Riesgo MEDIO: tenga cuidado*',
-  bajo: '🟢 *Riesgo BAJO: no vi señales claras*'
+  alto: '*RIESGO ALTO:* muy probable estafa',
+  medio: '*RIESGO MEDIO:* tenga cuidado',
+  bajo: '*RIESGO BAJO:* no vi señales claras'
 };
 
 const ACCIONES = {

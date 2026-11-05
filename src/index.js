@@ -20,7 +20,7 @@ function responderA(texto, numImagenes) {
   return { tipo: `riesgo-${analisis.nivel}`, mensaje: armarRespuesta(analisis) };
 }
 
-app.get('/', (req, res) => res.send('Alerta Migrante: bot activo ✅'));
+app.get('/', (req, res) => res.send('Alerta Migrante: bot activo'));
 
 app.post('/whatsapp', (req, res) => {
   const texto = (req.body.Body || '').trim();
